@@ -581,7 +581,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:260px;
 <!-- PRINT HEADER (shows only on print) -->
 <div class="print-header" id="printHeader">
   <div>
-    <div style="font-family:'Fredoka One',cursive;font-size:21px;color:#1E2A5E;" id="pAgencyName">Gramercy Suites</div>
+    <div style="font-family:'Fredoka One',cursive;font-size:21px;color:#1E2A5E;" id="pAgencyName">HereWeGo Suites</div>
     <div style="font-size:10px;color:#888;letter-spacing:2px;text-transform:uppercase;">Unit Booking & Finance Report</div>
   </div>
   <div style="text-align:right;font-size:11px;color:#888;" id="pMeta"></div>
@@ -596,7 +596,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:260px;
         <span id="logoLetter">G</span>
       </div>
       <div>
-        <div class="logo-text" id="agencyNameDisp">Gramercy Suites</div>
+        <div class="logo-text" id="agencyNameDisp">HereWeGo Suites</div>
         <div class="logo-sub" id="agencySubDisp">Premium Residences</div>
       </div>
     </div>
@@ -853,7 +853,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:260px;
     <div class="mbody">
       <div class="fr2">
         <div class="fr"><label class="flbl">Unit Number *</label><input class="finp" id="muNum" placeholder="e.g. 4201"></div>
-        <div class="fr"><label class="flbl">Building</label><input class="finp" id="muBuilding" placeholder="Gramercy Residences"></div>
+        <div class="fr"><label class="flbl">Building</label><input class="finp" id="muBuilding" placeholder="HereWeGo Residences"></div>
       </div>
       <div class="fr"><label class="flbl">Type</label>
         <select class="fsel" id="muType"><option>Studio</option><option>1BR</option><option>2BR</option></select></div>
@@ -889,10 +889,10 @@ const AV_COLORS=['#3A5BD9','#7B2FBE','#06A77D','#D97000','#E05588','#0098B5','#C
 
 // =================== STATE ===================
 let S = {
-  agency:{name:'Gramercy Suites',sub:'Premium Residences',logoDataUrl:''},
+  agency:{name:'HereWeGo Suites',sub:'Premium Residences',logoDataUrl:''},
   units:[
-    {id:'3016',building:'Gramercy Residences',type:'Studio',weekdayRate:3000,weekendRate:3500,monthlyRent:34000},
-    {id:'5624',building:'Gramercy Residences',type:'Studio',weekdayRate:3000,weekendRate:3500,monthlyRent:34000},
+    {id:'3016',building:'HereWeGo Residences',type:'Studio',weekdayRate:3000,weekendRate:3500,monthlyRent:34000},
+    {id:'5624',building:'HereWeGo Residences',type:'Studio',weekdayRate:3000,weekendRate:3500,monthlyRent:34000},
   ],
   bookings:[],
   expenses:{
@@ -1541,7 +1541,7 @@ function saveNewUnit(){
   const num=document.getElementById('muNum').value.trim();
   if(!num){toast('Enter unit number.');return;}
   if(S.units.find(u=>u.id===num)){toast('Unit already exists.');return;}
-  const building=document.getElementById('muBuilding').value.trim()||'Gramercy Residences';
+  const building=document.getElementById('muBuilding').value.trim()||'HereWeGo Residences';
   const type=document.getElementById('muType').value;
   const wd=parseFloat(document.getElementById('muWD').value)||3000;
   const we=parseFloat(document.getElementById('muWE').value)||3500;
@@ -1706,7 +1706,7 @@ function doPrint(){
       </div>
     </div>
 
-    <div class="pp-footer">${S.agency.name} · ${S.agency.sub} · Printed ${dateStr} · Gramercy Suite Manager</div>
+    <div class="pp-footer">${S.agency.name} · ${S.agency.sub} · Printed ${dateStr} · HereWeGo Suite Manager</div>
   </div>`;
   window.print();
 }
