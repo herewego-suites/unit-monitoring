@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="HWG.png" alt="HereWeGo Logo" width="140"/>
+<img src="[HWG.png](https://avatars.githubusercontent.com/u/281136396?s=400&u=fa7fb9e2eca25fe5e3e4c80d287295235002221d&v=4)" alt="HereWeGo Logo" width="140"/>
 
 # HereWeGo Unit Monitoring
 
