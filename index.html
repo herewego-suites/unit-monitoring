@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gramercy Suite Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ========== LIGHT THEME (warm gold/cream) ========== */
+:root {
+  --bg:       #F7F0DC;
+  --bg2:      #F0E8CC;
+  --surface:  #FFFDF5;
+  --surface2: #F5EDD8;
+  --border:   rgba(180,140,60,0.18);
+  --text:     #2C2416;
+  --text2:    #3D3018;
+  --text3:    #6B5A38;
+  --gold:     #D4980A;
+  --gold2:    #F5C842;
+  --gold3:    #FFF3C0;
+  --gold4:    #FAEAB0;
+  --navy:     #1E2A5E;
+  --navy2:    #2D3F8F;
+  --navy3:    #3D52B5;
+  --green:    #06A77D;
+  --green2:   #D0F5EA;
+  --red:      #D63230;
+  --red2:     #FDECEA;
+  --blue:     #3A5BD9;
+  --blue2:    #E0E8FF;
+  --purple:   #7B2FBE;
+  --purple2:  #F0E5FF;
+  --pink:     #E05588;
+  --pink2:    #FFE4F0;
+  --teal:     #0098B5;
+  --teal2:    #DCF5FB;
+  --orange:   #D97000;
+  --orange2:  #FEECD4;
+  --shadow:   0 4px 20px rgba(120,90,30,0.13);
+  --shadow-lg:0 8px 40px rgba(120,90,30,0.20);
+  --shadow-sm:0 2px 10px rgba(120,90,30,0.09);
+  --radius:   18px;
+  --radius-sm:10px;
+}
+/* ========== DARK THEME ========== */
+[data-theme="dark"] {
+  --bg:       #0D1028;
+  --bg2:      #121535;
+  --surface:  #181E45;
+  --surface2: #1E2555;
+  --border:   rgba(100,130,255,0.16);
+  --text:     #EDE8D5;
+  --text2:    #D4C89A;
+  --text3:    #A89E78;
+  --gold:     #F5A623;
+  --gold2:    #FFD166;
+  --gold3:    #2A200A;
+  --gold4:    #322800;
+  --navy:     #070B20;
+  --navy2:    #0E1330;
+  --navy3:    #181E45;
+  --green2:   #0A2E22;
+  --red2:     #280C10;
+  --blue2:    #0C1440;
+  --purple2:  #180A30;
+  --pink2:    #280E1C;
+  --teal2:    #041820;
+  --orange2:  #1E1000;
+  --shadow:   0 4px 20px rgba(0,0,0,0.5);
+  --shadow-lg:0 8px 40px rgba(0,0,0,0.6);
+  --shadow-sm:0 2px 10px rgba(0,0,0,0.35);
+}
+
+/* ========== RESET ========== */
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:260px;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,var(--navy3) 100%);
+  z-index:0;border-radius:0 0 36px 36px;}
+
+/* ========== HEADER ========== */
+.header{position:sticky;top:0;z-index:300;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,var(--navy3) 100%);
+  box-shadow:0 4px 28px rgba(0,0,0,0.28);}
+.header-inner{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px;max-width:1440px;margin:0 auto;gap:10px;flex-wrap:wrap;}
+.logo-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;}
+.logo-bubble{width:44px;height:44px;background:linear-gradient(135deg,var(--gold2),#B07000);
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka One',cursive;font-size:21px;color:white;
+  box-shadow:0 4px 12px rgba(200,150,0,0.4);transition:transform .2s;}
+.logo-bubble:hover{transform:scale(1.1) rotate(-4deg);}
+.logo-text{font-family:'Fredoka One',cursive;font-size:20px;color:var(--gold2);line-height:1.1;}
+.logo-sub{font-size:9px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:2px;}
+.header-center{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.unit-pill{padding:6px 15px;border-radius:30px;border:2px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);
+  font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Quicksand',sans-serif;}
+.unit-pill.active{background:var(--gold2);border-color:var(--gold2);color:var(--navy);
+  box-shadow:0 3px 10px rgba(200,160,0,0.4);}
+.unit-pill:hover:not(.active){background:rgba(255,255,255,0.14);}
+.header-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.hbtn{display:flex;align-items:center;gap:5px;padding:8px 13px;border-radius:24px;
+  border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);
+  color:rgba(255,255,255,0.85);font-family:'Quicksand',sans-serif;font-size:12px;
+  font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.hbtn:hover{background:rgba(255,255,255,0.16);}
+.hbtn-gold{background:var(--gold2);border-color:var(--gold2);color:var(--navy)!important;}
+.hbtn-gold:hover{opacity:.9;transform:translateY(-1px);}
+.theme-btn{width:38px;height:38px;border-radius:12px;border:2px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.07);color:white;font-size:17px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.theme-btn:hover{background:rgba(255,255,255,0.18);}
+
+/* ========== MAIN ========== */
+.main{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:18px 24px 90px;}
+
+/* ========== TABS ========== */
+.tabs{display:flex;gap:3px;background:var(--surface);border-radius:14px;padding:4px;
+  box-shadow:var(--shadow-sm);margin-bottom:18px;width:fit-content;flex-wrap:wrap;}
+.tab{padding:8px 18px;border-radius:11px;border:none;font-family:'Quicksand',sans-serif;
+  font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .2s;background:transparent;}
+.tab.active{background:var(--navy2);color:white;box-shadow:0 3px 10px rgba(30,42,94,0.3);}
+.tab:hover:not(.active){background:var(--bg2);color:var(--text);}
+
+/* ========== PANEL ========== */
+.panel{display:none;animation:fadeUp .3s ease;}
+.panel.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ========== STATS ========== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:11px;margin-bottom:18px;}
+.stat-card{background:var(--surface);border-radius:16px;padding:16px 18px;
+  border:2px solid var(--border);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:transform .2s;}
+.stat-card:hover{transform:translateY(-2px);}
+.stat-card::after{content:'';position:absolute;top:-16px;right:-16px;width:64px;height:64px;
+  border-radius:50%;background:var(--gold4);opacity:.5;}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:5px;}
+.stat-val{font-family:'Fredoka One',cursive;font-size:24px;color:var(--text);line-height:1.1;}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.sbadge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;margin-top:4px;}
+.sbadge-g{background:var(--green2);color:var(--green);}
+.sbadge-r{background:var(--red2);color:var(--red);}
+.sbadge-y{background:var(--gold3);color:var(--orange);}
+.sbadge-b{background:var(--blue2);color:var(--blue);}
+
+/* ========== CALENDAR ========== */
+.cal-card{background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;}
+.cal-head{display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px 14px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);}
+.cal-unit-lbl{font-family:'Fredoka One',cursive;font-size:18px;color:var(--gold2);}
+.cal-nav{display:flex;align-items:center;gap:10px;}
+.cnav-btn{width:32px;height:32px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.1);color:white;font-size:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.cnav-btn:hover{background:rgba(255,255,255,0.22);}
+.cal-month-lbl{font-family:'Fredoka One',cursive;font-size:19px;color:white;min-width:170px;text-align:center;}
+.cal-legend{display:flex;gap:12px;padding:8px 22px;background:var(--surface2);
+  border-bottom:2px solid var(--border);flex-wrap:wrap;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);font-weight:600;}
+.leg-dot{width:11px;height:11px;border-radius:4px;}
+.ld-bk{background:var(--navy2);}
+.ld-ci{background:var(--gold);}
+.ld-co{background:var(--blue);}
+.ld-cx{background:var(--red);}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);
+  background:var(--surface2);border-bottom:1px solid var(--border);}
+.cal-dow-h{padding:9px 4px;text-align:center;font-size:10px;font-weight:800;
+  text-transform:uppercase;letter-spacing:1px;color:var(--text3);}
+.cal-dow-h.we{color:var(--gold);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.cal-cell{border:1px solid var(--border);min-height:clamp(48px,12vw,90px);padding:clamp(2px,1vw,5px) clamp(2px,0.8vw,4px);
+  position:relative;cursor:pointer;transition:background .15s;background:var(--surface);}
+.cal-cell:hover{background:var(--bg);}
+.cal-cell.omonth{background:var(--surface2);opacity:.55;}
+.cal-cell.today{background:var(--gold3);}
+.cal-cell.we-cell{background:var(--surface2);}
+.cal-cell.today.we-cell{background:var(--gold4);}
+.dnum{font-family:'Fredoka One',cursive;font-size:clamp(10px,2.2vw,14px);color:var(--text);
+  width:clamp(18px,4vw,24px);height:clamp(18px,4vw,24px);display:flex;align-items:center;justify-content:center;
+  border-radius:50%;margin-bottom:1px;}
+.cal-cell.today .dnum{background:var(--gold);color:white;box-shadow:0 3px 8px rgba(200,150,0,0.45);}
+.bchip{display:block;font-size:clamp(7px,1.6vw,9px);font-weight:700;padding:1px clamp(2px,1vw,6px);border-radius:5px;
+  margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:100%;cursor:pointer;line-height:1.6;transition:transform .1s;}
+.bchip:hover{transform:scale(1.04);}
+.bchip.cancelled{background:var(--red2)!important;color:var(--red)!important;text-decoration:line-through;border:1px dashed var(--red);}
+.chip-amt{font-size:clamp(6px,1.4vw,8px);background:rgba(255,255,255,0.28);padding:0 3px;border-radius:3px;margin-left:2px;}
+
+/* 10 guest colors */
+.gc0{background:#3A5BD9;color:#fff;} .gc1{background:#7B2FBE;color:#fff;}
+.gc2{background:#06A77D;color:#fff;} .gc3{background:#D97000;color:#fff;}
+.gc4{background:#E05588;color:#fff;} .gc5{background:#0098B5;color:#fff;}
+.gc6{background:#C0392B;color:#fff;} .gc7{background:#1A7FBC;color:#fff;}
+.gc8{background:#219653;color:#fff;} .gc9{background:#9B59B6;color:#fff;}
+.AV0{background:#3A5BD9;} .AV1{background:#7B2FBE;} .AV2{background:#06A77D;}
+.AV3{background:#D97000;} .AV4{background:#E05588;} .AV5{background:#0098B5;}
+.AV6{background:#C0392B;} .AV7{background:#1A7FBC;} .AV8{background:#219653;} .AV9{background:#9B59B6;}
+
+/* ========== MODAL BASE ========== */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(10,14,45,.72);backdrop-filter:blur(6px);
+  z-index:1000;align-items:center;justify-content:center;padding:12px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:22px;width:620px;max-width:100%;
+  max-height:94vh;overflow-y:auto;box-shadow:0 28px 80px rgba(0,0,0,.35);border:2px solid var(--border);}
+.modal-head{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+  padding:18px 24px;border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Fredoka One',cursive;font-size:19px;color:var(--gold2);}
+.mclose{width:30px;height:30px;border-radius:9px;border:none;background:rgba(255,255,255,.12);
+  color:white;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.mbody{padding:20px 24px;}
+.mfooter{display:flex;gap:8px;justify-content:flex-end;
+  padding:14px 24px;border-top:2px solid var(--border);background:var(--surface2);border-radius:0 0 22px 22px;}
+
+/* ========== FORM ========== */
+.fsec{font-family:'Fredoka One',cursive;font-size:13px;color:var(--text2);
+  text-transform:uppercase;letter-spacing:1px;margin:16px 0 9px;
+  padding-bottom:5px;border-bottom:2px solid var(--border);}
+.fr{margin-bottom:12px;}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.flbl{display:block;font-size:10px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.finp,.fsel,.ftxt{width:100%;padding:9px 13px;border:2px solid var(--border);
+  border-radius:var(--radius-sm);font-family:'Quicksand',sans-serif;font-size:14px;
+  color:var(--text);background:var(--bg);transition:border-color .2s;outline:none;}
+.finp:focus,.fsel:focus,.ftxt:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(58,91,217,.1);}
+.ftxt{resize:vertical;min-height:65px;}
+
+/* ========== EXTRAS GRID ========== */
+.ext-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
+.ext-item{background:var(--bg2);border:2px solid var(--border);border-radius:10px;padding:8px 10px;}
+.ext-row1{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.ext-cb{width:15px;height:15px;accent-color:var(--blue);cursor:pointer;flex-shrink:0;}
+.ext-lbl{font-size:12px;font-weight:700;color:var(--text);flex:1;cursor:pointer;}
+.ext-row2{display:flex;align-items:center;gap:5px;}
+.ext-price-inp{width:80px;padding:3px 7px;border:2px solid var(--border);border-radius:7px;
+  font-family:'Fredoka One',cursive;font-size:12px;text-align:right;
+  background:var(--surface);color:var(--text);outline:none;}
+.ext-price-inp:focus{border-color:var(--blue);}
+.ext-qty-inp{width:44px;padding:3px 5px;border:2px solid var(--border);border-radius:7px;
+  font-family:'Fredoka One',cursive;font-size:12px;text-align:center;
+  background:var(--surface);color:var(--text);outline:none;}
+.ext-qty-inp:focus{border-color:var(--blue);}
+.ext-unit-lbl{font-size:9px;color:var(--text3);font-weight:700;flex:1;}
+
+/* ========== BREAKDOWN ========== */
+.bkdn{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+  border-radius:14px;padding:16px 18px;color:white;margin-top:12px;}
+.bkdn-title{font-family:'Fredoka One',cursive;font-size:12px;color:var(--gold2);margin-bottom:9px;text-transform:uppercase;letter-spacing:1px;}
+.bkdn-row{display:flex;justify-content:space-between;font-size:12px;padding:2px 0;color:rgba(255,255,255,.8);}
+.bkdn-sub{color:rgba(255,255,255,.55);font-size:11px;}
+.bkdn-total{border-top:1px solid rgba(255,255,255,.2);margin-top:7px;padding-top:9px;
+  font-family:'Fredoka One',cursive;font-size:19px;color:var(--gold2);}
+
+/* ========== RECEIPT MODAL ========== */
+.receipt-modal{width:480px;}
+.receipt-paper{background:#FFFDF5;border-radius:0;padding:0;}
+[data-theme="dark"] .receipt-paper{background:#1A1A2A;}
+.receipt-header{text-align:center;padding:22px 24px 14px;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);}
+.receipt-logo{font-family:'Fredoka One',cursive;font-size:22px;color:var(--gold2);}
+.receipt-sub{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:2px;margin-top:2px;}
+.receipt-body{padding:20px 24px;}
+.rcpt-guest{display:flex;align-items:center;gap:13px;margin-bottom:18px;
+  padding-bottom:14px;border-bottom:2px dashed var(--border);}
+.rcpt-avatar{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-family:'Fredoka One',cursive;font-size:22px;color:white;flex-shrink:0;}
+.rcpt-name{font-family:'Fredoka One',cursive;font-size:19px;color:var(--text);}
+.rcpt-id{font-size:10px;color:var(--text3);letter-spacing:1px;margin-top:2px;}
+.rcpt-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.rcpt-info-item{background:var(--bg2);border-radius:10px;padding:10px 12px;}
+.rcpt-info-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:2px;}
+.rcpt-info-val{font-size:13px;font-weight:700;color:var(--text);}
+.rcpt-divider{border:none;border-top:2px dashed var(--border);margin:14px 0;}
+.rcpt-line{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--text2);}
+.rcpt-line.sub{font-size:11px;color:var(--text3);}
+.rcpt-line.bold{font-weight:700;color:var(--text);}
+.rcpt-grand{display:flex;justify-content:space-between;
+  background:var(--navy);border-radius:12px;padding:14px 16px;margin-top:12px;}
+.rcpt-grand-lbl{font-family:'Fredoka One',cursive;font-size:16px;color:rgba(255,255,255,.8);}
+.rcpt-grand-amt{font-family:'Fredoka One',cursive;font-size:24px;color:var(--gold2);}
+.rcpt-footer{text-align:center;padding:12px 24px 20px;font-size:10px;color:var(--text3);}
+.rcpt-stamp{display:inline-block;border:2px solid var(--green);color:var(--green);
+  padding:4px 14px;border-radius:4px;font-weight:800;font-size:13px;
+  text-transform:uppercase;letter-spacing:2px;transform:rotate(-3deg);margin-top:8px;}
+.rcpt-stamp.cancelled{border-color:var(--red);color:var(--red);}
+
+/* ========== BUTTONS ========== */
+.btn{padding:9px 20px;border-radius:11px;font-family:'Quicksand',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--navy2));color:white;
+  box-shadow:0 4px 12px rgba(58,91,217,.3);}
+.btn-primary:hover{transform:translateY(-1px);opacity:.92;}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),#B07000);color:#1a0e00;
+  box-shadow:0 4px 12px rgba(200,150,0,.3);}
+.btn-gold:hover{transform:translateY(-1px);}
+.btn-outline{background:transparent;border:2px solid var(--border);color:var(--text2);}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+.btn-danger{background:var(--red);color:white;}
+.btn-green{background:var(--green);color:white;}
+.btn-sm{padding:6px 13px;font-size:12px;}
+
+/* ========== STATUS BADGES ========== */
+.sbge{display:inline-flex;align-items:center;gap:3px;padding:4px 11px;border-radius:20px;
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.s-booked{background:var(--blue2);color:var(--blue);}
+.s-checkedin{background:var(--green2);color:var(--green);}
+.s-checkedout{background:var(--teal2);color:var(--teal);}
+.s-cancelled{background:var(--red2);color:var(--red);}
+.s-pending{background:var(--gold3);color:var(--orange);}
+
+/* ========== BOOKINGS TABLE ========== */
+.bk-wrap{background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);
+  box-shadow:var(--shadow);overflow:hidden;}
+.bk-filter{display:flex;gap:7px;padding:12px 18px;border-bottom:2px solid var(--border);
+  background:var(--surface2);flex-wrap:wrap;align-items:center;}
+.fchip{padding:5px 13px;border-radius:18px;border:2px solid var(--border);background:var(--surface);
+  font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--text2);font-family:'Quicksand',sans-serif;}
+.fchip.active{background:var(--navy2);border-color:var(--navy2);color:white;}
+.fchip:hover:not(.active){border-color:var(--blue);color:var(--blue);}
+.bk-head{display:grid;grid-template-columns:42px 1fr 120px 120px 88px 90px 70px;
+  background:var(--navy);padding:10px 18px;gap:8px;}
+.bkth{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.4);font-weight:700;}
+.bk-row{display:grid;grid-template-columns:42px 1fr 120px 120px 88px 90px 70px;
+  padding:10px 18px;gap:8px;border-bottom:1px solid var(--border);
+  align-items:center;font-size:12px;cursor:pointer;transition:background .15s;}
+.bk-row:hover{background:var(--bg);}
+.bk-row:last-child{border-bottom:none;}
+.bk-av{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-family:'Fredoka One',cursive;font-size:14px;color:white;}
+.bk-name{font-weight:700;color:var(--text);}
+.bk-sub{font-size:10px;color:var(--text3);}
+.bk-amt{font-family:'Fredoka One',cursive;font-size:14px;color:var(--text);}
+.empty-state{text-align:center;padding:40px;font-family:'Fredoka One',cursive;font-size:17px;color:var(--text3);}
+.empty-icon{font-size:44px;display:block;margin-bottom:10px;}
+
+/* ========== FINANCES ========== */
+.fin-month-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.fin-mnav{width:32px;height:32px;border-radius:10px;border:2px solid var(--border);
+  background:var(--surface);color:var(--text);font-size:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.fin-mnav:hover{border-color:var(--blue);}
+.fin-mlbl{font-family:'Fredoka One',cursive;font-size:18px;color:var(--text);min-width:175px;}
+.profit-banner{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);
+  border-radius:var(--radius);padding:22px 26px;color:white;margin-bottom:18px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;box-shadow:var(--shadow-lg);}
+.pi{text-align:center;}
+.pi-lbl{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.4);margin-bottom:7px;}
+.pi-val{font-family:'Fredoka One',cursive;font-size:22px;color:var(--gold2);}
+.pi-val.green{color:#6FFFCB;}
+.pi-val.red{color:#FF8FAB;}
+.pi-sub{font-size:9px;color:rgba(255,255,255,.28);margin-top:3px;}
+.fin-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.fin-card{background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);
+  box-shadow:var(--shadow-sm);overflow:hidden;}
+.fin-chead{padding:13px 18px;display:flex;align-items:center;justify-content:space-between;
+  font-family:'Fredoka One',cursive;font-size:14px;}
+.fin-ch-major{background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--gold2);}
+.fin-ch-daily{background:linear-gradient(135deg,#0A5C3A,#06A77D);color:#A8F5DA;}
+.fin-row{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 18px;border-bottom:1px solid var(--border);font-size:12px;}
+.fin-row:last-child{border-bottom:none;}
+.fin-rn{color:var(--text2);font-weight:600;}
+.fin-inp{width:88px;padding:3px 7px;border:2px solid var(--border);border-radius:7px;
+  font-family:'Fredoka One',cursive;font-size:12px;text-align:right;
+  background:var(--bg);color:var(--text);outline:none;}
+.fin-inp:focus{border-color:var(--blue);}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.chart-card{background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);
+  box-shadow:var(--shadow-sm);padding:18px 20px;}
+.chart-title{font-family:'Fredoka One',cursive;font-size:15px;color:var(--text);margin-bottom:14px;}
+.chart-wrap{position:relative;height:220px;}
+
+/* ========== SETTINGS ========== */
+.set-section{background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);
+  box-shadow:var(--shadow-sm);margin-bottom:16px;overflow:hidden;}
+.set-head{background:var(--surface2);padding:13px 18px;font-family:'Fredoka One',cursive;
+  font-size:15px;color:var(--text);border-bottom:2px solid var(--border);}
+.set-body{padding:18px;}
+.set-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.um-card{background:var(--surface2);border-radius:12px;border:2px solid var(--border);
+  padding:16px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
+.um-name{font-family:'Fredoka One',cursive;font-size:17px;color:var(--text);}
+.um-det{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* ========== VIEW BOOKING MODAL ========== */
+.vbody{padding:20px 24px;}
+.v-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+  padding:20px 24px;display:flex;align-items:flex-start;gap:14px;}
+.v-av{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;
+  justify-content:center;font-family:'Fredoka One',cursive;font-size:23px;color:white;
+  flex-shrink:0;box-shadow:0 5px 15px rgba(0,0,0,.3);}
+.v-name{font-family:'Fredoka One',cursive;font-size:21px;color:white;}
+.v-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px;}
+.v-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px;margin-top:16px;}
+.v-item{background:var(--surface2);border-radius:11px;padding:11px 14px;border:1px solid var(--border);}
+.v-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:3px;}
+.v-val{font-size:13px;font-weight:700;color:var(--text);}
+.v-breakdown{background:var(--bg2);border-radius:12px;padding:14px 16px;
+  border:2px solid var(--border);margin-bottom:14px;}
+.vbd-title{font-family:'Fredoka One',cursive;font-size:12px;color:var(--text2);
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:9px;}
+.vbd-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;
+  border-bottom:1px solid var(--border);color:var(--text2);}
+.vbd-row:last-of-type{border-bottom:none;}
+.vbd-total{display:flex;justify-content:space-between;font-family:'Fredoka One',cursive;
+  font-size:20px;margin-top:10px;padding-top:10px;border-top:2px solid var(--border);color:var(--text);}
+.vbd-total .amt{color:var(--green);}
+[data-theme="dark"] .vbd-total{color:var(--gold2);}
+
+/* ========== AGENCY MODAL ========== */
+.agency-modal{width:440px;}
+
+/* ========== ADD UNIT MODAL ========== */
+.addunit-modal{width:480px;}
+
+/* ========== TOAST ========== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);
+  background:var(--navy);color:var(--gold2);padding:11px 22px;border-radius:14px;
+  font-size:14px;font-weight:700;z-index:9999;border:2px solid var(--gold);
+  box-shadow:var(--shadow-lg);opacity:0;transition:all .3s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* ========== FAB ========== */
+.fab{position:fixed;bottom:26px;right:26px;
+  background:linear-gradient(135deg,var(--gold2),#B07000);color:#1a0e00;
+  border:none;border-radius:50px;padding:13px 24px;font-family:'Fredoka One',cursive;
+  font-size:15px;cursor:pointer;box-shadow:0 8px 22px rgba(200,150,0,.45);
+  z-index:50;display:flex;align-items:center;gap:7px;transition:all .2s;}
+.fab:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(200,150,0,.55);}
+
+/* ========== PRINT ========== */
+.print-header{display:none;}
+.print-page{display:none;}
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  @page{size:letter portrait;margin:.45in;}
+  body,html{background:#fff!important;margin:0;padding:0;}
+  body::before{display:none!important;}
+  .header,.tabs,.fab,.no-print,.bk-filter,.panel,.stats-grid,
+  .cal-card,.bk-wrap,.fin-layout,.charts-row,.profit-banner,
+  .fin-month-bar,.set-section{display:none!important;}
+  .main{display:none!important;}
+  .print-page{display:block!important;font-family:'Quicksand',sans-serif;color:#1a1a2a;}
+  .pp-wrap{max-width:100%;page-break-inside:avoid;}
+  .pp-banner{background:linear-gradient(135deg,#1E2A5E 0%,#2D3F8F 60%,#3D52B5 100%);
+    border-radius:10px;padding:14px 18px;display:flex;align-items:center;
+    justify-content:space-between;margin-bottom:12px;color:white;}
+  .pp-logo-wrap{display:flex;align-items:center;gap:10px;}
+  .pp-logo-img{width:38px;height:38px;border-radius:9px;object-fit:cover;display:none;}
+  .pp-logo-img.has-logo{display:block!important;}
+  .pp-logo-letter{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,#F5C842,#B07000);
+    display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;
+    font-size:18px;color:white;}
+  .pp-logo-letter.hidden{display:none!important;}
+  .pp-agency{font-family:'Fredoka One',cursive;font-size:17px;color:#F5C842;line-height:1.1;}
+  .pp-sub{font-size:8px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:2px;}
+  .pp-meta{text-align:right;font-size:9px;color:rgba(255,255,255,0.7);}
+  .pp-meta-title{font-family:'Fredoka One',cursive;font-size:12px;color:white;margin-bottom:2px;}
+  .pp-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:11px;}
+  .pp-stat{background:#F7F0DC;border-radius:7px;padding:8px 10px;border:1px solid rgba(180,140,60,0.25);}
+  .pp-stat-lbl{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#6B5A38;margin-bottom:2px;}
+  .pp-stat-val{font-family:'Fredoka One',cursive;font-size:17px;color:#2C2416;line-height:1.1;}
+  .pp-sec{font-family:'Fredoka One',cursive;font-size:11px;color:#1E2A5E;
+    text-transform:uppercase;letter-spacing:1.5px;margin:10px 0 5px;
+    padding-bottom:3px;border-bottom:2px solid #2D3F8F;}
+  .pp-cal{border:1px solid rgba(180,140,60,0.25);border-radius:7px;overflow:hidden;margin-bottom:11px;}
+  .pp-cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:#1E2A5E;}
+  .pp-cal-dh{padding:4px 2px;text-align:center;font-size:7px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.5px;color:rgba(255,255,255,0.7);}
+  .pp-cal-dh.we{color:#F5C842;}
+  .pp-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+  .pp-cell{border:0.5px solid rgba(180,140,60,0.18);min-height:42px;padding:2px 2px;background:#FFFDF5;}
+  .pp-cell.omonth{background:#F5EDD8;opacity:.55;}
+  .pp-cell.today-p{background:#FFF3C0;}
+  .pp-cell.we-p{background:#F5EDD8;}
+  .pp-dnum{font-family:'Fredoka One',cursive;font-size:8.5px;color:#2C2416;
+    width:14px;height:14px;display:flex;align-items:center;justify-content:center;
+    border-radius:50%;margin-bottom:1px;}
+  .pp-cell.today-p .pp-dnum{background:#D4980A;color:white;}
+  .pp-chip{display:block;font-size:6.5px;font-weight:700;padding:1px 3px;border-radius:3px;
+    margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;
+    color:white;line-height:1.4;}
+  .pp-bk-table{width:100%;border-collapse:collapse;font-size:9px;margin-bottom:11px;}
+  .pp-bk-table th{background:#1E2A5E;color:white;padding:5px 7px;text-align:left;
+    font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;}
+  .pp-bk-table td{padding:4px 7px;border-bottom:1px solid rgba(180,140,60,0.15);color:#2C2416;}
+  .pp-bk-table tr:nth-child(even) td{background:#F7F0DC;}
+  .pp-status{display:inline-block;padding:1px 5px;border-radius:8px;font-size:7px;font-weight:700;}
+  .pp-st-booked{background:#E0E8FF;color:#3A5BD9;}
+  .pp-st-checkedin{background:#D0F5EA;color:#06A77D;}
+  .pp-st-checkedout{background:#F0E5FF;color:#7B2FBE;}
+  .pp-st-cancelled{background:#FDECEA;color:#D63230;}
+  .pp-st-pending{background:#FFF3C0;color:#D97000;}
+  .pp-amt{font-family:'Fredoka One',cursive;font-size:10px;color:#06A77D;}
+  .pp-fin{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px;}
+  .pp-fin-card{background:#F7F0DC;border-radius:7px;padding:9px 11px;border:1px solid rgba(180,140,60,0.25);}
+  .pp-fin-title{font-family:'Fredoka One',cursive;font-size:9px;color:#1E2A5E;
+    text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;border-bottom:1px solid rgba(180,140,60,0.2);padding-bottom:3px;}
+  .pp-fin-row{display:flex;justify-content:space-between;font-size:8.5px;padding:2px 0;color:#3D3018;border-bottom:0.5px solid rgba(180,140,60,0.1);}
+  .pp-fin-row:last-child{border-bottom:none;}
+  .pp-fin-total{display:flex;justify-content:space-between;font-family:'Fredoka One',cursive;
+    font-size:13px;margin-top:5px;padding-top:4px;border-top:1.5px solid rgba(30,42,94,0.2);}
+  .pp-profit-g{color:#06A77D;}.pp-profit-r{color:#D63230;}
+  .pp-footer{text-align:center;font-size:7.5px;color:#9C8A60;margin-top:8px;
+    padding-top:6px;border-top:1px solid rgba(180,140,60,0.2);}
+}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:900px){
+  .bk-head,.bk-row{grid-template-columns:36px 1fr 90px 70px 70px;}
+  .bk-head .bkth:nth-child(4),.bk-row>div:nth-child(4),
+  .bk-head .bkth:nth-child(7),.bk-row>div:nth-child(7){display:none;}
+  .fin-layout,.charts-row{grid-template-columns:1fr;}
+  .profit-banner{grid-template-columns:1fr 1fr;}
+  .ext-grid{grid-template-columns:1fr;}
+  .fr2{grid-template-columns:1fr;}
+  .set-row{grid-template-columns:1fr;}
+  .v-grid{grid-template-columns:1fr 1fr;}
+  .rcpt-info-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  .header-inner{padding:10px 14px;gap:7px;}
+  .main{padding:12px 12px 90px;}
+  .tabs{width:100%;}
+  .tab{padding:7px 12px;font-size:12px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .cal-dow-h{font-size:9px;}
+  .bk-head,.bk-row{grid-template-columns:34px 1fr 70px 70px;}
+  .bk-head .bkth:nth-child(n+4),.bk-row>div:nth-child(n+4):not(:nth-child(5)){display:none;}
+  .bk-head .bkth:nth-child(5),.bk-row>div:nth-child(5){display:block;}
+  .profit-banner{grid-template-columns:1fr 1fr;gap:12px;}
+  .mbody{padding:14px 16px;}
+  .mfooter{padding:12px 16px;}
+  .modal{border-radius:16px;}
+  .modal-head{border-radius:14px 14px 0 0;}
+  .hbtn span{display:none;}
+  .logo-sub{display:none;}
+  .v-grid{grid-template-columns:1fr;}
+  .rcpt-info-grid{grid-template-columns:1fr;}
+}
+@media(max-width:420px){
+  .stats-grid{grid-template-columns:1fr;}
+  .ext-grid{grid-template-columns:1fr;}
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px;}
+</style>
+</head>
+<body>
+
+<!-- PRINT HEADER (shows only on print) -->
+<div class="print-header" id="printHeader">
+  <div>
+    <div style="font-family:'Fredoka One',cursive;font-size:21px;color:#1E2A5E;" id="pAgencyName">Gramercy Suites</div>
+    <div style="font-size:10px;color:#888;letter-spacing:2px;text-transform:uppercase;">Unit Booking & Finance Report</div>
+  </div>
+  <div style="text-align:right;font-size:11px;color:#888;" id="pMeta"></div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-wrap" onclick="openAgencyModal()">
+      <div class="logo-bubble" id="logoBubble" style="overflow:hidden;padding:0;">
+        <img id="logoImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:14px;">
+        <span id="logoLetter">G</span>
+      </div>
+      <div>
+        <div class="logo-text" id="agencyNameDisp">Gramercy Suites</div>
+        <div class="logo-sub" id="agencySubDisp">Premium Residences</div>
+      </div>
+    </div>
+    <div class="header-center" id="unitPillsWrap"></div>
+    <div class="header-right">
+      <button class="hbtn no-print" onclick="openAddUnitModal()">＋ <span>Unit</span></button>
+      <button class="hbtn no-print" onclick="doPrint()">🖨 <span>Print</span></button>
+      <button class="theme-btn no-print" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="tabs no-print">
+    <button class="tab active" onclick="switchTab('calendar',this)">📅 Calendar</button>
+    <button class="tab" onclick="switchTab('bookings',this)">📋 Bookings</button>
+    <button class="tab" onclick="switchTab('finances',this)">💰 Finances</button>
+    <button class="tab" onclick="switchTab('settings',this)">⚙️ Settings</button>
+  </div>
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <!-- CALENDAR -->
+  <div class="panel active" id="panel-calendar">
+    <div class="cal-card">
+      <div class="cal-head">
+        <div class="cal-unit-lbl" id="calUnitLbl">All Units</div>
+        <div class="cal-nav">
+          <button class="cnav-btn" onclick="changeMonth(-1)">‹</button>
+          <div class="cal-month-lbl" id="calMonthLbl"></div>
+          <button class="cnav-btn" onclick="changeMonth(1)">›</button>
+        </div>
+      </div>
+      <div class="cal-legend">
+        <div class="leg-item"><div class="leg-dot ld-bk"></div>Booked</div>
+        <div class="leg-item"><div class="leg-dot ld-ci"></div>Check-in</div>
+        <div class="leg-item"><div class="leg-dot ld-co"></div>Check-out</div>
+        <div class="leg-item"><div class="leg-dot ld-cx"></div>Cancelled</div>
+      </div>
+      <div class="cal-dow">
+        <div class="cal-dow-h">SUN</div><div class="cal-dow-h">MON</div>
+        <div class="cal-dow-h">TUE</div><div class="cal-dow-h">WED</div>
+        <div class="cal-dow-h">THU</div><div class="cal-dow-h">FRI</div>
+        <div class="cal-dow-h we">SAT</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+  </div>
+
+  <!-- BOOKINGS -->
+  <div class="panel" id="panel-bookings">
+    <div class="bk-wrap">
+      <div class="bk-filter">
+        <span style="font-size:11px;font-weight:700;color:var(--text3);margin-right:3px;">Filter:</span>
+        <button class="fchip active" onclick="filterBk('all',this)">All</button>
+        <button class="fchip" onclick="filterBk('booked',this)">Booked</button>
+        <button class="fchip" onclick="filterBk('checkedin',this)">Checked-in</button>
+        <button class="fchip" onclick="filterBk('checkedout',this)">Checked-out</button>
+        <button class="fchip" onclick="filterBk('pending',this)">Pending</button>
+        <button class="fchip" onclick="filterBk('cancelled',this)">Cancelled</button>
+      </div>
+      <div class="bk-head">
+        <div class="bkth"></div><div class="bkth">Guest</div>
+        <div class="bkth">Check-in</div><div class="bkth">Check-out</div>
+        <div class="bkth">Status</div><div class="bkth">Total</div><div class="bkth">Unit</div>
+      </div>
+      <div id="bkBody"></div>
+    </div>
+  </div>
+
+  <!-- FINANCES -->
+  <div class="panel" id="panel-finances">
+    <div class="fin-month-bar">
+      <button class="fin-mnav" onclick="changeFinMonth(-1)">‹</button>
+      <div class="fin-mlbl" id="finMonthLbl"></div>
+      <button class="fin-mnav" onclick="changeFinMonth(1)">›</button>
+    </div>
+    <div class="profit-banner" id="profitBanner"></div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">📊 Revenue vs Expenses</div>
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🥧 Expense Breakdown</div>
+        <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+      </div>
+    </div>
+    <div class="fin-layout" id="finCards"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="panel" id="panel-settings">
+    <div class="set-section">
+      <div class="set-head">🏢 Agency Branding</div>
+      <div class="set-body">
+        <div class="set-row">
+          <div class="fr"><label class="flbl">Agency Name</label><input class="finp" id="setAgencyName"></div>
+          <div class="fr"><label class="flbl">Tagline</label><input class="finp" id="setAgencySub"></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveAgencySettings()">Save Branding</button>
+      </div>
+    </div>
+    <div class="set-section">
+      <div class="set-head">🕐 Check-in / Check-out Times</div>
+      <div class="set-body">
+        <div class="set-row">
+          <div class="fr"><label class="flbl">Check-in Time</label><input class="finp" type="time" id="setCheckin"></div>
+          <div class="fr"><label class="flbl">Check-out Time</label><input class="finp" type="time" id="setCheckout"></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveTimings()">Save Timings</button>
+      </div>
+    </div>
+    <div class="set-section">
+      <div class="set-head">💳 Default Extras Prices</div>
+      <div class="set-body">
+        <div id="setExtrasGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;"></div>
+        <button class="btn btn-primary" onclick="saveDefaultExtras()">Save Default Prices</button>
+      </div>
+    </div>
+    <div class="set-section">
+      <div class="set-head">🏠 Manage Units</div>
+      <div class="set-body">
+        <div id="unitManageList"></div>
+        <button class="btn btn-gold" onclick="openAddUnitModal()">＋ Add New Unit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="fab no-print" onclick="openNewBookingModal()">✦ New Booking</button>
+<div class="toast" id="toast"></div>
+
+<!-- PRINT PAGE (hidden, shown only on print) -->
+<div class="print-page" id="printPage"></div>
+
+<!-- ============ BOOKING MODAL ============ -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="bkModalTitle">New Booking</div>
+      <button class="mclose" onclick="closeModal('bookingModal')">✕</button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="bkId">
+      <div class="fr"><label class="flbl">Unit</label>
+        <select class="fsel" id="bkUnit" onchange="recalcBk()"></select></div>
+      <div class="fsec">👤 Guest Information</div>
+      <div class="fr"><label class="flbl">Guest Full Name *</label>
+        <input class="finp" id="bkName" placeholder="e.g. Juan dela Cruz"></div>
+      <div class="fr2">
+        <div class="fr"><label class="flbl">Contact *</label><input class="finp" id="bkContact" placeholder="09XX XXX XXXX"></div>
+        <div class="fr"><label class="flbl">Email</label><input class="finp" id="bkEmail" placeholder="guest@email.com"></div>
+      </div>
+      <div class="fr2">
+        <div class="fr"><label class="flbl">No. of Guests</label><input class="finp" type="number" id="bkGuests" value="1" min="1" max="30"></div>
+        <div class="fr"><label class="flbl">Status</label>
+          <select class="fsel" id="bkStatus">
+            <option value="booked">Booked</option>
+            <option value="checkedin">Checked-in</option>
+            <option value="checkedout">Checked-out</option>
+            <option value="pending">Pending</option>
+            <option value="cancelled">Cancelled</option>
+          </select></div>
+      </div>
+      <div class="fsec">📅 Stay Dates</div>
+      <div class="fr2">
+        <div class="fr"><label class="flbl">Check-in Date *</label>
+          <input class="finp" type="date" id="bkCheckin" onchange="recalcBk()"></div>
+        <div class="fr"><label class="flbl">Check-out Date *</label>
+          <input class="finp" type="date" id="bkCheckout" onchange="recalcBk()"></div>
+      </div>
+      <div class="fsec">🛎️ Extras & Add-ons <span style="font-size:10px;color:var(--text3);font-weight:400;">(adjust price & qty freely)</span></div>
+      <div class="ext-grid" id="extGrid"></div>
+      <div class="fr"><label class="flbl">Special Requests / Notes</label>
+        <textarea class="ftxt" id="bkNotes" placeholder="Parking, extra towels, etc."></textarea></div>
+      <div class="fr"><label class="flbl">Prod Cost / Booking Expense (₱)</label>
+        <input class="finp" type="number" id="bkProd" value="350" min="0" step="50"></div>
+      <div class="bkdn" id="bkBreakdown">
+        <div class="bkdn-title">💰 Amount Breakdown</div>
+        <div id="bkdnRows"></div>
+      </div>
+    </div>
+    <div class="mfooter">
+      <button class="btn btn-danger no-print" id="btnCxBk" style="display:none" onclick="cancelCurrBk()">Cancel Booking</button>
+      <button class="btn btn-outline" onclick="closeModal('bookingModal')">Close</button>
+      <button class="btn btn-primary" onclick="saveBk()">💾 Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VIEW / RECEIPT MODAL ============ -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal" style="width:560px;">
+    <div class="modal-head">
+      <div class="modal-title">Guest Details</div>
+      <button class="mclose" onclick="closeModal('viewModal')">✕</button>
+    </div>
+    <div id="viewBody"></div>
+    <div class="mfooter">
+      <button class="btn btn-outline" onclick="closeModal('viewModal')">Close</button>
+      <button class="btn btn-green btn-sm" onclick="openReceiptFromView()">🧾 Receipt</button>
+      <button class="btn btn-gold" id="viewEditBtn">✏️ Edit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RECEIPT MODAL ============ -->
+<div class="modal-overlay" id="receiptModal">
+  <div class="modal receipt-modal">
+    <div id="receiptContent"></div>
+    <div class="mfooter no-print">
+      <button class="btn btn-outline" onclick="closeModal('receiptModal')">Close</button>
+      <button class="btn btn-primary" onclick="printReceipt()">🖨️ Print Receipt</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ AGENCY MODAL ============ -->
+<div class="modal-overlay" id="agencyModal">
+  <div class="modal agency-modal">
+    <div class="modal-head"><div class="modal-title">Edit Agency Branding</div>
+      <button class="mclose" onclick="closeModal('agencyModal')">✕</button></div>
+    <div class="mbody">
+      <div class="fr"><label class="flbl">Agency Name</label><input class="finp" id="mAgencyName"></div>
+      <div class="fr"><label class="flbl">Tagline</label><input class="finp" id="mAgencySub"></div>
+      <div class="fr">
+        <label class="flbl">Logo Image <span style="font-weight:400;text-transform:none;letter-spacing:0">(PNG/JPG, replaces the letter icon)</span></label>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <img id="logoPreview" src="" alt="" style="width:50px;height:50px;border-radius:12px;object-fit:cover;border:2px solid var(--border);display:none;">
+          <div id="logoPreviewLetter" style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,var(--gold2),#B07000);display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:22px;color:white;"></div>
+          <div>
+            <label style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:10px;background:var(--blue2);color:var(--blue);font-size:12px;font-weight:700;cursor:pointer;border:2px solid var(--blue);transition:all .2s;">
+              📷 Upload Logo
+              <input type="file" id="mLogoFile" accept="image/*" style="display:none" onchange="previewLogo(this)">
+            </label>
+            <button class="btn btn-outline btn-sm" style="margin-left:6px;font-size:11px;" onclick="removeLogo()">✕ Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mfooter">
+      <button class="btn btn-outline" onclick="closeModal('agencyModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAgencyFromModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADD UNIT MODAL ============ -->
+<div class="modal-overlay" id="addUnitModal">
+  <div class="modal addunit-modal">
+    <div class="modal-head"><div class="modal-title">Add New Unit</div>
+      <button class="mclose" onclick="closeModal('addUnitModal')">✕</button></div>
+    <div class="mbody">
+      <div class="fr2">
+        <div class="fr"><label class="flbl">Unit Number *</label><input class="finp" id="muNum" placeholder="e.g. 4201"></div>
+        <div class="fr"><label class="flbl">Building</label><input class="finp" id="muBuilding" placeholder="Gramercy Residences"></div>
+      </div>
+      <div class="fr"><label class="flbl">Type</label>
+        <select class="fsel" id="muType"><option>Studio</option><option>1BR</option><option>2BR</option></select></div>
+      <div class="fr2">
+        <div class="fr"><label class="flbl">Weekday Rate (₱)</label><input class="finp" type="number" id="muWD" value="3000"></div>
+        <div class="fr"><label class="flbl">Weekend Rate (₱)</label><input class="finp" type="number" id="muWE" value="3500"></div>
+      </div>
+      <div class="fr"><label class="flbl">Monthly Rent (₱)</label><input class="finp" type="number" id="muRent" value="34000"></div>
+    </div>
+    <div class="mfooter">
+      <button class="btn btn-outline" onclick="closeModal('addUnitModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewUnit()">Add Unit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =================== CATALOG ===================
+const EXTRAS_CATALOG = [
+  {id:'parking',  label:'🚗 Parking',          price:500,  unit:'per day'},
+  {id:'extraBed', label:'🛏️ Extra Bed',         price:500,  unit:'per day'},
+  {id:'extraCard',label:'💳 Extra Access Card', price:3000, unit:'flat'},
+  {id:'extraPax', label:'👥 Extra Pax',          price:300,  unit:'per pax/day'},
+  {id:'laundry',  label:'👕 Laundry',            price:200,  unit:'per use'},
+  {id:'mineral',  label:'💧 Mineral Water',      price:50,   unit:'per bottle'},
+  {id:'wineGlass',label:'🍷 Wine Glass',         price:100,  unit:'per set'},
+  {id:'towel',    label:'🛁 Extra Towel',        price:100,  unit:'per piece'},
+  {id:'netflix',  label:'📺 Netflix',            price:149,  unit:'flat'},
+  {id:'guestKit', label:'🧴 Guest Kit',          price:250,  unit:'flat'},
+];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const AV_COLORS=['#3A5BD9','#7B2FBE','#06A77D','#D97000','#E05588','#0098B5','#C0392B','#1A7FBC','#219653','#9B59B6'];
+
+// =================== STATE ===================
+let S = {
+  agency:{name:'Gramercy Suites',sub:'Premium Residences',logoDataUrl:''},
+  units:[
+    {id:'3016',building:'Gramercy Residences',type:'Studio',weekdayRate:3000,weekendRate:3500,monthlyRent:34000},
+    {id:'5624',building:'Gramercy Residences',type:'Studio',weekdayRate:3000,weekendRate:3500,monthlyRent:34000},
+  ],
+  bookings:[],
+  expenses:{
+    '3016':{meralco:3500,wifi:1499,water:500,netflix:149},
+    '5624':{meralco:3500,wifi:1499,water:500,netflix:149},
+  },
+  defaultExtraPrices:{}, // overrides for EXTRAS_CATALOG prices
+  currentUnit:'ALL', // 'ALL' or unit id
+  calYear:new Date().getFullYear(),calMonth:new Date().getMonth(),
+  finYear:new Date().getFullYear(),finMonth:new Date().getMonth(),
+  checkinTime:'14:00',checkoutTime:'12:00',
+  theme:'light',
+  gColorMap:{},
+  bkFilter:'all',
+};
+
+let barChartInst=null, pieChartInst=null;
+let _viewBkId=null;
+
+function load(){try{const s=localStorage.getItem('grcy3');if(s)Object.assign(S,JSON.parse(s));}catch(e){}}
+function save(){localStorage.setItem('grcy3',JSON.stringify(S));}
+
+// =================== HELPERS ===================
+function gColor(bkId){
+  if(S.gColorMap[bkId]===undefined){
+    const used=Object.keys(S.gColorMap).length;
+    S.gColorMap[bkId]=used%10;
+  }
+  return S.gColorMap[bkId];
+}
+function avColor(bkId){return AV_COLORS[gColor(bkId)];}
+function nightsCount(ci,co){return Math.max(0,Math.round((new Date(co)-new Date(ci))/86400000));}
+function fmt(d){return new Date(d).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});}
+function fmtShort(d){return new Date(d).toLocaleDateString('en-PH',{month:'short',day:'numeric'});}
+function fmtFull(d){return new Date(d).toLocaleDateString('en-PH',{weekday:'short',month:'long',day:'numeric',year:'numeric'});}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2700);}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function getUnit(id){return S.units.find(u=>u.id===id)||{};}
+function extraPrice(id){return S.defaultExtraPrices[id]!==undefined?S.defaultExtraPrices[id]:EXTRAS_CATALOG.find(e=>e.id===id)?.price||0;}
+
+// =================== THEME ===================
+function toggleTheme(){S.theme=S.theme==='light'?'dark':'light';applyTheme();save();}
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',S.theme);
+  document.getElementById('themeBtn').textContent=S.theme==='dark'?'☀️':'🌙';
+  if(barChartInst||pieChartInst) setTimeout(renderFinances,100);
+}
+
+// =================== AGENCY ===================
+function updateAgencyDisp(){
+  const n=S.agency.name;
+  document.getElementById('agencyNameDisp').textContent=n;
+  document.getElementById('agencySubDisp').textContent=S.agency.sub;
+  document.getElementById('logoLetter').textContent=n.charAt(0).toUpperCase();
+  document.getElementById('pAgencyName').textContent=n;
+  const imgEl=document.getElementById('logoImg');
+  const letterEl=document.getElementById('logoLetter');
+  if(S.agency.logoDataUrl){
+    imgEl.src=S.agency.logoDataUrl;imgEl.style.display='block';
+    letterEl.style.display='none';
+  } else {
+    imgEl.style.display='none';letterEl.style.display='flex';
+  }
+}
+function openAgencyModal(){
+  document.getElementById('mAgencyName').value=S.agency.name;
+  document.getElementById('mAgencySub').value=S.agency.sub;
+  document.getElementById('logoPreviewLetter').textContent=S.agency.name.charAt(0).toUpperCase();
+  const prev=document.getElementById('logoPreview');
+  const prevLetter=document.getElementById('logoPreviewLetter');
+  if(S.agency.logoDataUrl){
+    prev.src=S.agency.logoDataUrl;prev.style.display='block';prevLetter.style.display='none';
+  } else {
+    prev.style.display='none';prevLetter.style.display='flex';
+  }
+  openModal('agencyModal');
+}
+function previewLogo(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const url=e.target.result;
+    const prev=document.getElementById('logoPreview');
+    prev.src=url;prev.style.display='block';
+    document.getElementById('logoPreviewLetter').style.display='none';
+    S.agency.logoDataUrl=url;
+  };
+  reader.readAsDataURL(file);
+}
+function removeLogo(){
+  S.agency.logoDataUrl='';
+  const prev=document.getElementById('logoPreview');
+  prev.src='';prev.style.display='none';
+  const pl=document.getElementById('logoPreviewLetter');
+  pl.textContent=S.agency.name.charAt(0).toUpperCase();pl.style.display='flex';
+  document.getElementById('mLogoFile').value='';
+  updateAgencyDisp();save();toast('Logo removed.');
+}
+function saveAgencyFromModal(){
+  S.agency.name=document.getElementById('mAgencyName').value.trim()||S.agency.name;
+  S.agency.sub=document.getElementById('mAgencySub').value.trim();
+  // logoDataUrl already updated by previewLogo/removeLogo
+  save();updateAgencyDisp();renderSettings();closeModal('agencyModal');toast('Branding updated! ✨');
+}
+function saveAgencySettings(){
+  S.agency.name=document.getElementById('setAgencyName').value.trim()||S.agency.name;
+  S.agency.sub=document.getElementById('setAgencySub').value.trim();
+  save();updateAgencyDisp();toast('Branding saved!');
+}
+
+// =================== UNIT PILLS ===================
+function renderUnitPills(){
+  const pills=document.getElementById('unitPillsWrap');
+  let html=`<button class="unit-pill ${S.currentUnit==='ALL'?'active':''}" onclick="switchUnit('ALL')">All Units</button>`;
+  S.units.forEach(u=>{
+    html+=`<button class="unit-pill ${S.currentUnit===u.id?'active':''}" onclick="switchUnit('${u.id}')">Unit ${u.id}</button>`;
+  });
+  pills.innerHTML=html;
+}
+function switchUnit(id){
+  S.currentUnit=id;save();
+  renderUnitPills();renderStats();renderCalendar();renderBkTable();renderFinances();
+}
+
+// =================== STATS ===================
+function renderStats(){
+  const now=new Date();
+  const activeUnits=S.currentUnit==='ALL'?S.units.map(u=>u.id):[S.currentUnit];
+  const mBks=S.bookings.filter(b=>{
+    if(!activeUnits.includes(b.unitId)) return false;
+    const ci=new Date(b.checkin);
+    return b.status!=='cancelled'&&ci.getMonth()===now.getMonth()&&ci.getFullYear()===now.getFullYear();
+  });
+  const revenue=mBks.reduce((s,b)=>s+(b.totalAmount||0),0);
+  const nights=mBks.reduce((s,b)=>s+b.nights,0);
+  let totalRent=0, totalFixed=0;
+  activeUnits.forEach(uid=>{
+    const u=getUnit(uid);
+    totalRent+=(u.monthlyRent||0);
+    const ex=S.expenses[uid]||{};
+    totalFixed+=Object.values(ex).reduce((a,v)=>a+(parseFloat(v)||0),0);
+  });
+  const prodExp=mBks.reduce((s,b)=>s+(b.prodCost||0),0);
+  const profit=revenue-totalRent-totalFixed-prodExp;
+  const uLabel=S.currentUnit==='ALL'?'All Units':`Unit ${S.currentUnit}`;
+  document.getElementById('statsGrid').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Bookings (${MONTHS[now.getMonth()].slice(0,3)})</div><div class="stat-val">${mBks.length}</div><div class="stat-sub">${uLabel}</div></div>
+    <div class="stat-card"><div class="stat-label">Nights Booked</div><div class="stat-val">${nights}</div><div class="stat-sub">${uLabel}</div></div>
+    <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-val" style="font-size:18px">₱${revenue.toLocaleString()}</div><span class="sbadge sbadge-g">Income</span></div>
+    <div class="stat-card"><div class="stat-label">Net Profit</div><div class="stat-val" style="font-size:18px;color:${profit>=0?'var(--green)':'var(--red)'}">₱${Math.abs(profit).toLocaleString()}</div><span class="sbadge ${profit>=0?'sbadge-g':'sbadge-r'}">${profit>=0?'Profit':'Loss'}</span></div>
+    <div class="stat-card"><div class="stat-label">Monthly Rent</div><div class="stat-val" style="font-size:18px">₱${totalRent.toLocaleString()}</div><span class="sbadge sbadge-y">Major Exp</span></div>
+  `;
+}
+
+// =================== CALENDAR ===================
+function changeMonth(d){
+  S.calMonth+=d;if(S.calMonth>11){S.calMonth=0;S.calYear++;}if(S.calMonth<0){S.calMonth=11;S.calYear--;}
+  renderCalendar();
+}
+function renderCalendar(){
+  const activeUnits=S.currentUnit==='ALL'?S.units.map(u=>u.id):[S.currentUnit];
+  const label=S.currentUnit==='ALL'?'All Units':`Unit ${S.currentUnit}`;
+  document.getElementById('calUnitLbl').textContent=label;
+  document.getElementById('calMonthLbl').textContent=`${MONTHS[S.calMonth]} ${S.calYear}`;
+  const first=new Date(S.calYear,S.calMonth,1);
+  const last=new Date(S.calYear,S.calMonth+1,0);
+  const today=new Date();today.setHours(0,0,0,0);
+  const bks=S.bookings.filter(b=>activeUnits.includes(b.unitId));
+  // Use first unit's rates for rate display (or average)
+  let cells='';
+  for(let i=0;i<first.getDay();i++) cells+=`<div class="cal-cell omonth"></div>`;
+  for(let d=1;d<=last.getDate();d++){
+    const date=new Date(S.calYear,S.calMonth,d);date.setHours(0,0,0,0);
+    const ds=`${S.calYear}-${String(S.calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=date.getTime()===today.getTime();
+    const isWe=date.getDay()===0||date.getDay()===6;
+    let chips='';
+    bks.forEach(b=>{
+      const ci=new Date(b.checkin);ci.setHours(0,0,0,0);
+      const co=new Date(b.checkout);co.setHours(0,0,0,0);
+      if(date<ci||date>co) return;
+      const ci_=gColor(b.id);
+      if(b.status==='cancelled'){
+        chips+=`<span class="bchip cancelled" onclick="event.stopPropagation();openReceipt('${b.id}')">${b.name.split(' ')[0]}</span>`;return;
+      }
+      let lbl=b.name.split(' ')[0];
+      const isCI=date.getTime()===ci.getTime(), isCO=date.getTime()===co.getTime();
+      if(isCI) lbl='▶ '+lbl;
+      else if(isCO) lbl='◀ '+lbl;
+      const amtTag=isCI?`<span class="chip-amt">₱${(b.totalAmount||0).toLocaleString()}</span>`:'';
+      const unitTag=S.currentUnit==='ALL'?`<span class="chip-amt" style="background:rgba(0,0,0,.2)">${b.unitId}</span>`:'';
+      chips+=`<span class="bchip gc${ci_}" onclick="event.stopPropagation();openReceipt('${b.id}')">${lbl}${amtTag}${unitTag}</span>`;
+    });
+    cells+=`<div class="cal-cell${isToday?' today':''}${isWe?' we-cell':''}" onclick="openNewBookingModalDate('${ds}')">
+      <div class="dnum">${d}</div>${chips}
+    </div>`;
+  }
+  const rem=(7-(last.getDay()+1)%7)%7;
+  for(let i=0;i<rem;i++) cells+=`<div class="cal-cell omonth"></div>`;
+  document.getElementById('calGrid').innerHTML=cells;
+}
+
+// =================== BOOKING MODAL ===================
+function renderExtGrid(bkId){
+  const b=bkId?S.bookings.find(b=>b.id===bkId):null;
+  const ex=b?.extras||{};
+  document.getElementById('extGrid').innerHTML=EXTRAS_CATALOG.map(e=>{
+    const ck=ex[e.id];
+    const checked=ck?'checked':'';
+    const qty=ck?.qty||1;
+    const price=ck?.price!==undefined?ck.price:extraPrice(e.id);
+    return `<div class="ext-item">
+      <div class="ext-row1">
+        <input class="ext-cb" type="checkbox" id="ec_${e.id}" ${checked} onchange="recalcBk()">
+        <label class="ext-lbl" for="ec_${e.id}">${e.label}</label>
+      </div>
+      <div class="ext-row2">
+        <span style="font-size:9px;color:var(--text3);font-weight:700;">₱</span>
+        <input class="ext-price-inp" type="number" id="ep_${e.id}" value="${price}" min="0" onchange="recalcBk()">
+        <input class="ext-qty-inp" type="number" id="eq_${e.id}" value="${qty}" min="1" max="99" onchange="recalcBk()">
+        <div class="ext-unit-lbl">${e.unit}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openNewBookingModal(dateStr){
+  document.getElementById('bkModalTitle').textContent='New Booking';
+  document.getElementById('bkId').value='';
+  document.getElementById('bkUnit').innerHTML=S.units.map(u=>`<option value="${u.id}" ${u.id===(S.currentUnit==='ALL'?S.units[0]?.id:S.currentUnit)?'selected':''}>${u.id} — ${u.building}</option>`).join('');
+  document.getElementById('bkName').value='';
+  document.getElementById('bkContact').value='';
+  document.getElementById('bkEmail').value='';
+  document.getElementById('bkGuests').value='1';
+  document.getElementById('bkStatus').value='booked';
+  document.getElementById('bkNotes').value='';
+  document.getElementById('bkProd').value='350';
+  const today=new Date().toISOString().split('T')[0];
+  const tom=new Date(Date.now()+86400000).toISOString().split('T')[0];
+  document.getElementById('bkCheckin').value=dateStr||today;
+  document.getElementById('bkCheckout').value=dateStr?new Date(new Date(dateStr).getTime()+86400000).toISOString().split('T')[0]:tom;
+  document.getElementById('btnCxBk').style.display='none';
+  renderExtGrid(null);recalcBk();openModal('bookingModal');
+}
+function openNewBookingModalDate(ds){openNewBookingModal(ds);}
+
+function getSelectedExtras(){
+  const out={};
+  EXTRAS_CATALOG.forEach(e=>{
+    const cb=document.getElementById('ec_'+e.id);
+    if(cb?.checked){
+      const qty=parseInt(document.getElementById('eq_'+e.id).value)||1;
+      const price=parseFloat(document.getElementById('ep_'+e.id).value)||0;
+      out[e.id]={qty,price,label:e.label,unit:e.unit};
+    }
+  });
+  return out;
+}
+
+function recalcBk(){
+  const uid=document.getElementById('bkUnit').value;
+  const u=getUnit(uid);
+  const ci=document.getElementById('bkCheckin').value;
+  const co=document.getElementById('bkCheckout').value;
+  if(!ci||!co) return;
+  const start=new Date(ci),end=new Date(co);
+  if(end<=start){document.getElementById('bkdnRows').innerHTML='<div class="bkdn-row bkdn-sub">Check-out must be after check-in</div>';return;}
+  const nights=Math.round((end-start)/86400000);
+  // Rate rule: weekend premium (3500) ONLY for exactly 1-night stay on Sat or Sun. All else = weekday rate.
+  const isSingleWeekendNight=nights===1&&(start.getDay()===0||start.getDay()===6);
+  let base=0,rows='';
+  for(let i=0;i<nights;i++){
+    const day=new Date(start);day.setDate(start.getDate()+i);
+    const isWe=day.getDay()===0||day.getDay()===6;
+    const rate=isSingleWeekendNight?(u.weekendRate||3500):(u.weekdayRate||3000);
+    base+=rate;
+    rows+=`<div class="bkdn-row bkdn-sub">${day.toLocaleDateString('en-PH',{weekday:'short',month:'short',day:'numeric'})} (${isWe?'Weekend':'Weekday'})<span>₱${rate.toLocaleString()}</span></div>`;
+  }
+  const extras=getSelectedExtras();
+  let extTotal=0;
+  Object.values(extras).forEach(ex=>{
+    let cost=0;
+    if(ex.unit==='per day'||ex.unit==='per pax/day') cost=ex.price*ex.qty*nights;
+    else cost=ex.price*ex.qty;
+    extTotal+=cost;
+    rows+=`<div class="bkdn-row bkdn-sub">${ex.label} ×${ex.qty}${ex.unit!=='flat'?' ('+nights+'nts)':''}<span>₱${cost.toLocaleString()}</span></div>`;
+  });
+  const grand=base+extTotal;
+  rows+=`<div class="bkdn-row bkdn-total">${nights} night${nights!==1?'s':''} total<span>₱${grand.toLocaleString()}</span></div>`;
+  document.getElementById('bkdnRows').innerHTML=rows;
+}
+
+function saveBk(){
+  const id=document.getElementById('bkId').value;
+  const unitId=document.getElementById('bkUnit').value;
+  const name=document.getElementById('bkName').value.trim();
+  const contact=document.getElementById('bkContact').value.trim();
+  const email=document.getElementById('bkEmail').value.trim();
+  const checkin=document.getElementById('bkCheckin').value;
+  const checkout=document.getElementById('bkCheckout').value;
+  const guests=parseInt(document.getElementById('bkGuests').value)||1;
+  const status=document.getElementById('bkStatus').value;
+  const notes=document.getElementById('bkNotes').value.trim();
+  const prodCost=parseFloat(document.getElementById('bkProd').value)||0;
+  if(!name||!contact||!checkin||!checkout){toast('Please fill required fields.');return;}
+  const start=new Date(checkin),end=new Date(checkout);
+  if(end<=start){toast('Check-out must be after check-in.');return;}
+  // ---- Double-booking check ----
+  // A booking occupies from 14:00 on checkin date to 12:00 on checkout date.
+  // Two stays conflict if one's check-in is strictly before the other's check-out AND
+  // the other's check-in is strictly before the first's check-out.
+  // We compare at date level: conflict if checkin < other.checkout AND other.checkin < checkout
+  const conflict=S.bookings.find(b=>{
+    if(b.status==='cancelled') return false;  // cancelled bookings don't block
+    if(b.unitId!==unitId) return false;       // different unit, no conflict
+    if(id && b.id===id) return false;         // same booking being edited
+    // Overlap: new checkin < existing checkout AND existing checkin < new checkout
+    // Since checkout is 12pm and checkin is 2pm on the SAME day, two consecutive
+    // bookings (checkout day N = checkin day N) do NOT conflict (12pm < 2pm).
+    // We treat checkout date as end-of-morning and checkin date as afternoon.
+    // So: conflict only when checkin < other.checkout (strictly) AND other.checkin < checkout (strictly)
+    return checkin < b.checkout && b.checkin < checkout;
+  });
+  if(conflict){
+    toast(`⛔ Double booking! Unit ${unitId} is already booked by ${conflict.name} (${conflict.checkin} → ${conflict.checkout}).`);
+    return;
+  }  const extras=getSelectedExtras();
+  const nights=Math.round((end-start)/86400000);
+  const isSingleWeekendNight=nights===1&&(start.getDay()===0||start.getDay()===6);
+  let base=0;
+  for(let i=0;i<nights;i++){
+    const day=new Date(start);day.setDate(start.getDate()+i);
+    const u=getUnit(unitId);
+    base+=isSingleWeekendNight?(u.weekendRate||3500):(u.weekdayRate||3000);
+  }
+  let extTotal=0;
+  Object.values(extras).forEach(ex=>{
+    extTotal+=ex.unit==='per day'||ex.unit==='per pax/day'?ex.price*ex.qty*nights:ex.price*ex.qty;
+  });
+  const totalAmount=base+extTotal;
+  const bk={id:id||'B'+String(Date.now()).slice(-6),unitId,name,contact,email,checkin,checkout,guests,status,notes,prodCost,extras,nights,baseAmount:base,extrasAmount:extTotal,totalAmount};
+  if(id){const i=S.bookings.findIndex(b=>b.id===id);if(i>-1)S.bookings[i]=bk;}
+  else{gColor(bk.id);S.bookings.push(bk);}
+  save();closeModal('bookingModal');
+  renderCalendar();renderBkTable();renderStats();renderFinances();toast('Booking saved! ✨');
+}
+function cancelCurrBk(){
+  const id=document.getElementById('bkId').value;if(!id)return;
+  if(!confirm('Cancel this booking?'))return;
+  const b=S.bookings.find(b=>b.id===id);if(b)b.status='cancelled';
+  save();closeModal('bookingModal');renderCalendar();renderBkTable();renderStats();renderFinances();toast('Booking cancelled.');
+}
+function editBk(id){
+  const b=S.bookings.find(b=>b.id===id);if(!b)return;
+  document.getElementById('bkModalTitle').textContent='Edit Booking';
+  document.getElementById('bkId').value=b.id;
+  document.getElementById('bkUnit').innerHTML=S.units.map(u=>`<option value="${u.id}" ${u.id===b.unitId?'selected':''}>${u.id} — ${u.building}</option>`).join('');
+  document.getElementById('bkName').value=b.name;
+  document.getElementById('bkContact').value=b.contact;
+  document.getElementById('bkEmail').value=b.email||'';
+  document.getElementById('bkCheckin').value=b.checkin;
+  document.getElementById('bkCheckout').value=b.checkout;
+  document.getElementById('bkGuests').value=b.guests;
+  document.getElementById('bkStatus').value=b.status;
+  document.getElementById('bkNotes').value=b.notes||'';
+  document.getElementById('bkProd').value=b.prodCost||350;
+  document.getElementById('btnCxBk').style.display=b.status!=='cancelled'?'inline-flex':'none';
+  renderExtGrid(b.id);
+  // apply saved extra prices
+  if(b.extras) Object.entries(b.extras).forEach(([eid,ex])=>{
+    const cb=document.getElementById('ec_'+eid);
+    const pI=document.getElementById('ep_'+eid);
+    const qI=document.getElementById('eq_'+eid);
+    if(cb)cb.checked=true;if(pI)pI.value=ex.price;if(qI)qI.value=ex.qty;
+  });
+  recalcBk();openModal('bookingModal');
+}
+
+// =================== VIEW / RECEIPT ===================
+function openReceipt(id){
+  _viewBkId=id;
+  const b=S.bookings.find(b=>b.id===id);if(!b)return;
+  const av=avColor(id);
+  const ci=fmtFull(b.checkin),co=fmtFull(b.checkout);
+  let extRows='';
+  if(b.extras&&Object.keys(b.extras).length){
+    Object.values(b.extras).forEach(ex=>{
+      const c=ex.unit==='per day'||ex.unit==='per pax/day'?ex.price*ex.qty*b.nights:ex.price*ex.qty;
+      extRows+=`<div class="vbd-row"><span>${ex.label} ×${ex.qty}${ex.unit!=='flat'?' ('+b.nights+'nts)':''}</span><span>₱${c.toLocaleString()}</span></div>`;
+    });
+  }
+  const html=`
+    <div class="v-hero">
+      <div class="v-av" style="background:${av}">${b.name.charAt(0)}</div>
+      <div>
+        <div class="v-name">${b.name}</div>
+        <div class="v-sub">Unit ${b.unitId} · ${b.nights} night${b.nights!==1?'s':''} · ${b.guests} pax</div>
+        <div style="margin-top:8px"><span class="sbge s-${b.status}">${b.status}</span></div>
+      </div>
+    </div>
+    <div class="vbody">
+      <div class="v-grid">
+        <div class="v-item"><div class="v-lbl">Contact</div><div class="v-val">${b.contact}</div></div>
+        <div class="v-item"><div class="v-lbl">Email</div><div class="v-val">${b.email||'—'}</div></div>
+        <div class="v-item"><div class="v-lbl">Check-in</div><div class="v-val">${ci}<br><small style="color:var(--text3)">2:00 PM</small></div></div>
+        <div class="v-item"><div class="v-lbl">Check-out</div><div class="v-val">${co}<br><small style="color:var(--text3)">12:00 PM</small></div></div>
+        <div class="v-item"><div class="v-lbl">Guests</div><div class="v-val">${b.guests} pax</div></div>
+        <div class="v-item"><div class="v-lbl">Booking ID</div><div class="v-val" style="font-size:11px;color:var(--text3)">${b.id}</div></div>
+      </div>
+      ${b.notes?`<div style="margin-bottom:14px"><div class="v-lbl" style="margin-bottom:5px">📝 Notes</div><div style="background:var(--bg2);border-radius:9px;padding:10px;font-size:13px">${b.notes}</div></div>`:''}
+      <div class="v-breakdown">
+        <div class="vbd-title">💰 Payment Breakdown</div>
+        <div class="vbd-row"><span>Base Stay (${b.nights} nights)</span><span>₱${b.baseAmount.toLocaleString()}</span></div>
+        ${extRows}
+        <div class="vbd-total"><span>Total</span><span class="amt">₱${b.totalAmount.toLocaleString()}</span></div>
+        ${b.prodCost?`<div style="font-size:11px;color:var(--text3);margin-top:5px">Prod cost (expense): ₱${b.prodCost.toLocaleString()}</div>`:''}
+      </div>
+    </div>`;
+  document.getElementById('viewBody').innerHTML=html;
+  document.getElementById('viewEditBtn').onclick=()=>{closeModal('viewModal');editBk(id);};
+  openModal('viewModal');
+}
+function openReceiptFromView(){closeModal('viewModal');buildReceipt(_viewBkId);openModal('receiptModal');}
+function buildReceipt(id){
+  const b=S.bookings.find(b=>b.id===id);if(!b)return;
+  const av=avColor(id);
+  const ci=fmtFull(b.checkin),co=fmtFull(b.checkout);
+  let lines='';
+  if(b.extras&&Object.keys(b.extras).length){
+    Object.values(b.extras).forEach(ex=>{
+      const c=ex.unit==='per day'||ex.unit==='per pax/day'?ex.price*ex.qty*b.nights:ex.price*ex.qty;
+      lines+=`<div class="rcpt-line"><span>${ex.label} ×${ex.qty}${ex.unit!=='flat'?' ('+b.nights+'nts)':''}</span><span>₱${c.toLocaleString()}</span></div>`;
+    });
+  }
+  const isOk=b.status!=='cancelled';
+  const stamp=isOk?'PAID':'CANCELLED';
+  const stampClass=isOk?'':'cancelled';
+  document.getElementById('receiptContent').innerHTML=`
+    <div class="receipt-paper">
+      <div class="receipt-header">
+        <div class="receipt-logo" id="rcptAgency">${S.agency.name}</div>
+        <div class="receipt-sub">${S.agency.sub}</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:6px">OFFICIAL BOOKING RECEIPT</div>
+      </div>
+      <div class="receipt-body">
+        <div class="rcpt-guest">
+          <div class="rcpt-avatar" style="background:${av}">${b.name.charAt(0)}</div>
+          <div>
+            <div class="rcpt-name">${b.name}</div>
+            <div class="rcpt-id">Booking ID: ${b.id} · Unit ${b.unitId}</div>
+          </div>
+        </div>
+        <div class="rcpt-info-grid">
+          <div class="rcpt-info-item"><div class="rcpt-info-lbl">Check-in</div><div class="rcpt-info-val">${fmtShort(b.checkin)}, 2:00 PM</div></div>
+          <div class="rcpt-info-item"><div class="rcpt-info-lbl">Check-out</div><div class="rcpt-info-val">${fmtShort(b.checkout)}, 12:00 PM</div></div>
+          <div class="rcpt-info-item"><div class="rcpt-info-lbl">Nights</div><div class="rcpt-info-val">${b.nights} night${b.nights!==1?'s':''}</div></div>
+          <div class="rcpt-info-item"><div class="rcpt-info-lbl">Guests</div><div class="rcpt-info-val">${b.guests} pax</div></div>
+          <div class="rcpt-info-item"><div class="rcpt-info-lbl">Contact</div><div class="rcpt-info-val">${b.contact}</div></div>
+          <div class="rcpt-info-item"><div class="rcpt-info-lbl">Status</div><div class="rcpt-info-val"><span class="sbge s-${b.status}">${b.status}</span></div></div>
+        </div>
+        <hr class="rcpt-divider">
+        <div class="rcpt-line bold"><span>Base Stay (${b.nights} nights)</span><span>₱${b.baseAmount.toLocaleString()}</span></div>
+        ${lines}
+        <div class="rcpt-grand">
+          <div class="rcpt-grand-lbl">Total Amount Due</div>
+          <div class="rcpt-grand-amt">₱${b.totalAmount.toLocaleString()}</div>
+        </div>
+        ${b.notes?`<div style="margin-top:12px;font-size:11px;color:var(--text3)">📝 ${b.notes}</div>`:''}
+      </div>
+      <div class="rcpt-footer">
+        <div>Thank you for choosing ${S.agency.name}!</div>
+        <div style="margin-top:4px;font-size:9px">Printed: ${new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'})}</div>
+        <div class="rcpt-stamp ${stampClass}">${stamp}</div>
+      </div>
+    </div>`;
+}
+function printReceipt(){window.print();}
+
+// =================== BOOKINGS TABLE ===================
+let _bkFilter='all';
+function filterBk(f,btn){
+  _bkFilter=f;
+  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderBkTable();
+}
+function renderBkTable(){
+  const activeUnits=S.currentUnit==='ALL'?S.units.map(u=>u.id):[S.currentUnit];
+  let list=S.bookings.filter(b=>activeUnits.includes(b.unitId));
+  if(_bkFilter!=='all') list=list.filter(b=>b.status===_bkFilter);
+  list.sort((a,b)=>new Date(b.checkin)-new Date(a.checkin));
+  if(!list.length){
+    document.getElementById('bkBody').innerHTML=`<div class="empty-state"><span class="empty-icon">📋</span>No bookings found.</div>`;
+    return;
+  }
+  document.getElementById('bkBody').innerHTML=list.map(b=>{
+    const ci=fmtShort(b.checkin),co=fmtShort(b.checkout);
+    return `<div class="bk-row" onclick="openReceipt('${b.id}')">
+      <div><div class="bk-av" style="background:${avColor(b.id)}">${b.name.charAt(0)}</div></div>
+      <div><div class="bk-name">${b.name}</div><div class="bk-sub">${b.guests} pax · ${b.nights}nts · ${b.contact}</div></div>
+      <div><div style="font-size:12px;font-weight:700">${ci}</div><div class="bk-sub">2:00 PM</div></div>
+      <div><div style="font-size:12px;font-weight:700">${co}</div><div class="bk-sub">12:00 PM</div></div>
+      <div><span class="sbge s-${b.status}">${b.status}</span></div>
+      <div class="bk-amt">₱${(b.totalAmount||0).toLocaleString()}</div>
+      <div style="font-size:11px;color:var(--text3);font-weight:700">Unit ${b.unitId}</div>
+    </div>`;
+  }).join('');
+}
+
+// =================== FINANCES ===================
+function changeFinMonth(d){
+  S.finMonth+=d;if(S.finMonth>11){S.finMonth=0;S.finYear++;}if(S.finMonth<0){S.finMonth=11;S.finYear--;}
+  renderFinances();
+}
+function renderFinances(){
+  document.getElementById('finMonthLbl').textContent=`${MONTHS[S.finMonth]} ${S.finYear}`;
+  const activeUnits=S.currentUnit==='ALL'?S.units.map(u=>u.id):[S.currentUnit];
+  const mBks=S.bookings.filter(b=>{
+    if(!activeUnits.includes(b.unitId)) return false;
+    const ci=new Date(b.checkin);
+    return b.status!=='cancelled'&&ci.getMonth()===S.finMonth&&ci.getFullYear()===S.finYear;
+  });
+  const revenue=mBks.reduce((s,b)=>s+(b.totalAmount||0),0);
+  const prodExp=mBks.reduce((s,b)=>s+(b.prodCost||0),0);
+  let totalRent=0,totalFixed=0;
+  const fixedBreakdown={meralco:0,wifi:0,water:0,netflix:0};
+  activeUnits.forEach(uid=>{
+    const u=getUnit(uid);totalRent+=(u.monthlyRent||0);
+    const ex=S.expenses[uid]||{};
+    Object.keys(fixedBreakdown).forEach(k=>{fixedBreakdown[k]+=(parseFloat(ex[k])||0);});
+    totalFixed+=Object.values(ex).reduce((a,v)=>a+(parseFloat(v)||0),0);
+  });
+  const totalExp=totalRent+totalFixed+prodExp;
+  const profit=revenue-totalExp;
+  const roi=totalRent>0?(profit/totalRent*100):0;
+  document.getElementById('profitBanner').innerHTML=`
+    <div class="pi"><div class="pi-lbl">Revenue</div><div class="pi-val">₱${revenue.toLocaleString()}</div><div class="pi-sub">${mBks.length} bookings</div></div>
+    <div class="pi"><div class="pi-lbl">Expenses</div><div class="pi-val red">₱${totalExp.toLocaleString()}</div><div class="pi-sub">rent+util+prod</div></div>
+    <div class="pi"><div class="pi-lbl">Net Profit</div><div class="pi-val ${profit>=0?'green':'red'}">₱${Math.abs(profit).toLocaleString()}</div><div class="pi-sub">${profit>=0?'Profit':'Loss'}</div></div>
+    <div class="pi"><div class="pi-lbl">ROI</div><div class="pi-val ${roi>=0?'green':'red'}">${roi.toFixed(1)}%</div><div class="pi-sub">vs rent</div></div>
+  `;
+  // ---- CHARTS ----
+  const isDark=S.theme==='dark';
+  const textColor=isDark?'#EDE8D5':'#2C2416';
+  const gridColor=isDark?'rgba(200,180,100,0.1)':'rgba(100,80,30,0.1)';
+  // Bar chart
+  if(barChartInst){barChartInst.destroy();barChartInst=null;}
+  const bc=document.getElementById('barChart').getContext('2d');
+  barChartInst=new Chart(bc,{
+    type:'bar',
+    data:{
+      labels:['Revenue','Rent','Utilities','Prod Cost','Net Profit'],
+      datasets:[{
+        data:[revenue,totalRent,totalFixed,prodExp,Math.max(0,profit)],
+        backgroundColor:['#06A77D','#D97000','#3A5BD9','#E05588',profit>=0?'#06A77D':'#D63230'],
+        borderRadius:8,borderSkipped:false,
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`₱${c.raw.toLocaleString()}`}}},scales:{y:{ticks:{color:textColor,callback:v=>'₱'+v.toLocaleString()},grid:{color:gridColor}},x:{ticks:{color:textColor},grid:{display:false}}}}
+  });
+  // Pie chart
+  if(pieChartInst){pieChartInst.destroy();pieChartInst=null;}
+  const pc=document.getElementById('pieChart').getContext('2d');
+  const pieData=[totalRent,fixedBreakdown.meralco,fixedBreakdown.wifi,fixedBreakdown.water,fixedBreakdown.netflix,prodExp].filter(v=>v>0);
+  const pieLabels=['Rent','Meralco','WiFi','Water','Netflix','Prod Cost'].filter((_,i)=>[totalRent,fixedBreakdown.meralco,fixedBreakdown.wifi,fixedBreakdown.water,fixedBreakdown.netflix,prodExp][i]>0);
+  pieChartInst=new Chart(pc,{
+    type:'doughnut',
+    data:{labels:pieLabels,datasets:[{data:pieData,backgroundColor:['#D97000','#3A5BD9','#0098B5','#06A77D','#E05588','#7B2FBE'],borderWidth:2,borderColor:isDark?'#181E45':'#FFFDF5'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:textColor,font:{size:10},boxWidth:12}},tooltip:{callbacks:{label:c=>`${c.label}: ₱${c.raw.toLocaleString()}`}}}}
+  });
+  // Expense cards
+  const expKeys=[{k:'meralco',l:'⚡ Meralco'},{k:'wifi',l:'📶 WiFi'},{k:'water',l:'💧 Water'},{k:'netflix',l:'📺 Netflix'}];
+  let majorRows=`<div class="fin-row"><span class="fin-rn">🏠 Monthly Rent</span><span style="font-family:'Fredoka One',cursive;font-size:14px;color:var(--red)">₱${totalRent.toLocaleString()}</span></div>`;
+  // show first unit's inputs (or sum for all)
+  const firstUid=activeUnits[0];
+  if(firstUid){
+    const ex=S.expenses[firstUid]||{};
+    expKeys.forEach(({k,l})=>{
+      majorRows+=`<div class="fin-row"><span class="fin-rn">${l}</span>
+        <input class="fin-inp" type="number" value="${ex[k]||0}" onchange="updateExp('${firstUid}','${k}',this.value)"></div>`;
+    });
+    if(S.currentUnit==='ALL'&&activeUnits.length>1) majorRows+=`<div class="fin-row"><span class="fin-rn" style="font-size:10px;color:var(--text3)">Showing ${activeUnits[0]} expenses. Switch to single unit to edit others.</span></div>`;
+  }
+  const prodRows=mBks.length?mBks.map(b=>`
+    <div class="fin-row"><span class="fin-rn">${b.name.split(' ')[0]} (${fmtShort(b.checkin)})</span>
+    <span style="font-family:'Fredoka One',cursive;font-size:13px;color:var(--red)">₱${(b.prodCost||0).toLocaleString()}</span></div>`).join(''):
+    `<div class="fin-row"><span class="fin-rn" style="color:var(--text3)">No bookings this month</span></div>`;
+  document.getElementById('finCards').innerHTML=`
+    <div class="fin-card">
+      <div class="fin-chead fin-ch-major">🏢 Major Expenses <span style="font-size:12px;opacity:.55">₱${(totalRent+totalFixed).toLocaleString()}</span></div>
+      ${majorRows}
+    </div>
+    <div class="fin-card">
+      <div class="fin-chead fin-ch-daily">🧾 Booking Prod Costs <span style="font-size:12px;opacity:.55">₱${prodExp.toLocaleString()}</span></div>
+      ${prodRows}
+    </div>`;
+}
+function updateExp(uid,key,val){
+  if(!S.expenses[uid])S.expenses[uid]={};
+  S.expenses[uid][key]=parseFloat(val)||0;
+  save();renderFinances();renderStats();
+}
+
+// =================== SETTINGS ===================
+function renderSettings(){
+  document.getElementById('setAgencyName').value=S.agency.name;
+  document.getElementById('setAgencySub').value=S.agency.sub;
+  document.getElementById('setCheckin').value=S.checkinTime;
+  document.getElementById('setCheckout').value=S.checkoutTime;
+  // Extras price defaults
+  document.getElementById('setExtrasGrid').innerHTML=EXTRAS_CATALOG.map(e=>`
+    <div class="ext-item">
+      <div class="ext-row1"><span class="ext-lbl">${e.label}</span></div>
+      <div class="ext-row2">
+        <span style="font-size:10px;color:var(--text3)">Default ₱</span>
+        <input class="ext-price-inp" type="number" id="sep_${e.id}" value="${extraPrice(e.id)}" min="0">
+        <span class="ext-unit-lbl">${e.unit}</span>
+      </div>
+    </div>`).join('');
+  // Unit list
+  document.getElementById('unitManageList').innerHTML=S.units.map(u=>`
+    <div class="um-card">
+      <div>
+        <div class="um-name">Unit ${u.id}</div>
+        <div class="um-det">${u.building} · ${u.type} · WD ₱${u.weekdayRate.toLocaleString()} / WE ₱${u.weekendRate.toLocaleString()}</div>
+        <div class="um-det">Monthly Rent: ₱${u.monthlyRent.toLocaleString()}</div>
+      </div>
+      ${S.units.length>1?`<button class="btn btn-danger btn-sm" onclick="removeUnit('${u.id}')">Remove</button>`:''}
+    </div>`).join('');
+}
+function saveDefaultExtras(){
+  EXTRAS_CATALOG.forEach(e=>{
+    const inp=document.getElementById('sep_'+e.id);
+    if(inp) S.defaultExtraPrices[e.id]=parseFloat(inp.value)||e.price;
+  });
+  save();toast('Default prices saved!');
+}
+function saveTimings(){
+  S.checkinTime=document.getElementById('setCheckin').value;
+  S.checkoutTime=document.getElementById('setCheckout').value;
+  save();toast('Timings saved!');
+}
+function openAddUnitModal(){openModal('addUnitModal');}
+function saveNewUnit(){
+  const num=document.getElementById('muNum').value.trim();
+  if(!num){toast('Enter unit number.');return;}
+  if(S.units.find(u=>u.id===num)){toast('Unit already exists.');return;}
+  const building=document.getElementById('muBuilding').value.trim()||'Gramercy Residences';
+  const type=document.getElementById('muType').value;
+  const wd=parseFloat(document.getElementById('muWD').value)||3000;
+  const we=parseFloat(document.getElementById('muWE').value)||3500;
+  const rent=parseFloat(document.getElementById('muRent').value)||34000;
+  S.units.push({id:num,building,type,weekdayRate:wd,weekendRate:we,monthlyRent:rent});
+  if(!S.expenses[num])S.expenses[num]={meralco:3500,wifi:1499,water:500,netflix:149};
+  save();renderUnitPills();renderSettings();closeModal('addUnitModal');toast('Unit added!');
+}
+function removeUnit(id){
+  if(!confirm(`Remove Unit ${id}?`))return;
+  S.units=S.units.filter(u=>u.id!==id);
+  if(S.currentUnit===id)S.currentUnit=S.units[0]?.id||'ALL';
+  save();renderUnitPills();renderStats();renderCalendar();renderBkTable();renderSettings();toast('Unit removed.');
+}
+
+// =================== MISC ===================
+function switchTab(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(name==='finances')renderFinances();
+  if(name==='settings')renderSettings();
+}
+function doPrint(){
+  const now=new Date();
+  const activeUnits=S.currentUnit==='ALL'?S.units.map(u=>u.id):[S.currentUnit];
+  const uLabel=S.currentUnit==='ALL'?'All Units':`Unit ${S.currentUnit}`;
+  const dateStr=now.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
+
+  // Stats
+  const mBks=S.bookings.filter(b=>{
+    if(!activeUnits.includes(b.unitId)) return false;
+    const ci=new Date(b.checkin);
+    return b.status!=='cancelled'&&ci.getMonth()===now.getMonth()&&ci.getFullYear()===now.getFullYear();
+  });
+  const revenue=mBks.reduce((s,b)=>s+(b.totalAmount||0),0);
+  const nights=mBks.reduce((s,b)=>s+b.nights,0);
+  let totalRent=0,totalFixed=0;
+  activeUnits.forEach(uid=>{
+    const u=getUnit(uid);totalRent+=(u.monthlyRent||0);
+    const ex=S.expenses[uid]||{};
+    totalFixed+=Object.values(ex).reduce((a,v)=>a+(parseFloat(v)||0),0);
+  });
+  const prodExp=mBks.reduce((s,b)=>s+(b.prodCost||0),0);
+  const profit=revenue-totalRent-totalFixed-prodExp;
+
+  // Logo HTML
+  const hasLogo=S.agency.logoDataUrl?true:false;
+  const logoHtml=hasLogo
+    ?`<img class="pp-logo-img has-logo" src="${S.agency.logoDataUrl}" alt="logo"><div class="pp-logo-letter hidden">${S.agency.name.charAt(0)}</div>`
+    :`<div class="pp-logo-img"></div><div class="pp-logo-letter">${S.agency.name.charAt(0)}</div>`;
+
+  // Calendar
+  const cy=S.calYear,cm=S.calMonth;
+  const first=new Date(cy,cm,1),last=new Date(cy,cm+1,0);
+  const bks=S.bookings.filter(b=>activeUnits.includes(b.unitId));
+  const todayD=new Date();todayD.setHours(0,0,0,0);
+  let calCells='';
+  for(let i=0;i<first.getDay();i++) calCells+=`<div class="pp-cell omonth"></div>`;
+  for(let d=1;d<=last.getDate();d++){
+    const date=new Date(cy,cm,d);date.setHours(0,0,0,0);
+    const isToday=date.getTime()===todayD.getTime();
+    const isWe=date.getDay()===0||date.getDay()===6;
+    let chips='';
+    bks.forEach(b=>{
+      const ci=new Date(b.checkin);ci.setHours(0,0,0,0);
+      const co=new Date(b.checkout);co.setHours(0,0,0,0);
+      if(date<ci||date>co) return;
+      if(b.status==='cancelled') return;
+      const c=AV_COLORS[gColor(b.id)];
+      let lbl=b.name.split(' ')[0];
+      if(date.getTime()===ci.getTime()) lbl='▶'+lbl;
+      else if(date.getTime()===co.getTime()) lbl='◀'+lbl;
+      chips+=`<span class="pp-chip" style="background:${c}">${lbl}</span>`;
+    });
+    calCells+=`<div class="pp-cell${isToday?' today-p':''}${isWe?' we-p':''}">
+      <div class="pp-dnum">${d}</div>${chips}</div>`;
+  }
+  const rem=(7-(last.getDay()+1)%7)%7;
+  for(let i=0;i<rem;i++) calCells+=`<div class="pp-cell omonth"></div>`;
+
+  // Bookings table (all active, this month)
+  const allBks=S.bookings.filter(b=>activeUnits.includes(b.unitId))
+    .sort((a,b)=>new Date(b.checkin)-new Date(a.checkin)).slice(0,20);
+  const stClass={booked:'pp-st-booked',checkedin:'pp-st-checkedin',checkedout:'pp-st-checkedout',cancelled:'pp-st-cancelled',pending:'pp-st-pending'};
+  const bkRows=allBks.map(b=>`<tr>
+    <td><strong>${b.name}</strong><br><span style="font-size:8px;color:#6B5A38">${b.contact}</span></td>
+    <td>${fmtShort(b.checkin)}</td><td>${fmtShort(b.checkout)}</td>
+    <td>${b.nights}N</td>
+    <td><span class="pp-status ${stClass[b.status]||''}">${b.status}</span></td>
+    <td class="pp-amt">₱${(b.totalAmount||0).toLocaleString()}</td>
+    ${S.currentUnit==='ALL'?`<td style="font-size:8px;color:#3A5BD9;font-weight:700">${b.unitId}</td>`:''}
+  </tr>`).join('');
+
+  // Finance rows
+  const firstUid=activeUnits[0];
+  const ex=S.expenses[firstUid]||{};
+  const expNames={meralco:'⚡ Meralco',wifi:'📶 WiFi',water:'💧 Water',netflix:'📺 Netflix'};
+  const expRows=Object.entries(expNames).map(([k,l])=>`<div class="pp-fin-row"><span>${l}</span><span>₱${(ex[k]||0).toLocaleString()}</span></div>`).join('');
+
+  document.getElementById('printPage').innerHTML=`
+  <div class="pp-wrap">
+    <div class="pp-banner">
+      <div class="pp-logo-wrap">
+        ${logoHtml}
+        <div>
+          <div class="pp-agency">${S.agency.name}</div>
+          <div class="pp-sub">${S.agency.sub}</div>
+        </div>
+      </div>
+      <div class="pp-meta">
+        <div class="pp-meta-title">Booking & Finance Report</div>
+        <div>${uLabel} · ${dateStr}</div>
+        <div style="margin-top:2px">${MONTHS[cm]} ${cy} Calendar</div>
+      </div>
+    </div>
+
+    <div class="pp-stats">
+      <div class="pp-stat"><div class="pp-stat-lbl">Bookings (${MONTHS[now.getMonth()].slice(0,3)})</div><div class="pp-stat-val">${mBks.length}</div></div>
+      <div class="pp-stat"><div class="pp-stat-lbl">Nights Booked</div><div class="pp-stat-val">${nights}</div></div>
+      <div class="pp-stat"><div class="pp-stat-lbl">Revenue</div><div class="pp-stat-val" style="font-size:13px">₱${revenue.toLocaleString()}</div></div>
+      <div class="pp-stat"><div class="pp-stat-lbl">Net Profit</div><div class="pp-stat-val" style="font-size:13px;color:${profit>=0?'#06A77D':'#D63230'}">₱${Math.abs(profit).toLocaleString()}</div></div>
+      <div class="pp-stat"><div class="pp-stat-lbl">Monthly Rent</div><div class="pp-stat-val" style="font-size:13px">₱${totalRent.toLocaleString()}</div></div>
+    </div>
+
+    <div class="pp-sec">📅 ${MONTHS[cm]} ${cy} — Calendar</div>
+    <div class="pp-cal">
+      <div class="pp-cal-dow">
+        <div class="pp-cal-dh">SUN</div><div class="pp-cal-dh">MON</div>
+        <div class="pp-cal-dh">TUE</div><div class="pp-cal-dh">WED</div>
+        <div class="pp-cal-dh">THU</div><div class="pp-cal-dh">FRI</div>
+        <div class="pp-cal-dh we">SAT</div>
+      </div>
+      <div class="pp-cal-grid">${calCells}</div>
+    </div>
+
+    <div class="pp-sec">📋 Bookings (Recent ${allBks.length})</div>
+    <table class="pp-bk-table">
+      <thead><tr>
+        <th>Guest</th><th>Check-in</th><th>Check-out</th><th>Nights</th><th>Status</th><th>Total</th>
+        ${S.currentUnit==='ALL'?'<th>Unit</th>':''}
+      </tr></thead>
+      <tbody>${bkRows||'<tr><td colspan="7" style="text-align:center;color:#9C8A60;padding:10px">No bookings found</td></tr>'}</tbody>
+    </table>
+
+    <div class="pp-sec">💰 Finance Summary — ${MONTHS[now.getMonth()]} ${now.getFullYear()}</div>
+    <div class="pp-fin">
+      <div class="pp-fin-card">
+        <div class="pp-fin-title">🏢 Major Expenses</div>
+        <div class="pp-fin-row"><span>🏠 Monthly Rent</span><span style="color:#D63230;font-weight:700">₱${totalRent.toLocaleString()}</span></div>
+        ${expRows}
+        <div class="pp-fin-row"><span>🧾 Prod Costs</span><span style="color:#D63230;font-weight:700">₱${prodExp.toLocaleString()}</span></div>
+        <div class="pp-fin-total"><span>Total Expenses</span><span class="pp-profit-r">₱${(totalRent+totalFixed+prodExp).toLocaleString()}</span></div>
+      </div>
+      <div class="pp-fin-card">
+        <div class="pp-fin-title">📈 Revenue & Profit</div>
+        <div class="pp-fin-row"><span>Total Revenue</span><span style="color:#06A77D;font-weight:700">₱${revenue.toLocaleString()}</span></div>
+        <div class="pp-fin-row"><span>Total Expenses</span><span style="color:#D63230;font-weight:700">₱${(totalRent+totalFixed+prodExp).toLocaleString()}</span></div>
+        <div class="pp-fin-row"><span>ROI</span><span style="font-weight:700">${totalRent?((profit/totalRent)*100).toFixed(1)+'%':'—'}</span></div>
+        <div class="pp-fin-total"><span>Net ${profit>=0?'Profit':'Loss'}</span><span class="${profit>=0?'pp-profit-g':'pp-profit-r'}">₱${Math.abs(profit).toLocaleString()}</span></div>
+      </div>
+    </div>
+
+    <div class="pp-footer">${S.agency.name} · ${S.agency.sub} · Printed ${dateStr} · Gramercy Suite Manager</div>
+  </div>`;
+  window.print();
+}
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
+});
+
+// =================== INIT ===================
+function init(){
+  load();applyTheme();updateAgencyDisp();
+  renderUnitPills();renderStats();renderCalendar();renderBkTable();
+  // init finance charts after a tick (canvas may not be ready)
+  setTimeout(renderFinances,50);
+}
+init();
+</script>
+</body>
+</html>
