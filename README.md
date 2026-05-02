@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🏙️ HereWeGo Unit Monitoring
+<img src="HWG.png" alt="HereWeGo Logo" width="140"/>
+
+# HereWeGo Unit Monitoring
 
 ### *Your units. Your guests. Your profits. All in one tab.*
 
